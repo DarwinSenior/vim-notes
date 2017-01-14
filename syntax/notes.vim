@@ -169,6 +169,17 @@ syntax match notesAtxHeading /^#\+.*/ contains=notesAtxMarker,@notesInline
 highlight def link notesAtxHeading Title
 syntax match notesAtxMarker /^#\+/ contained
 highlight def link notesAtxMarker Comment
+if xolox#misc#option#get('notes_conceal_header', 1)
+  highlight clear Conceal
+python << EOF
+import vim
+bulletlist = vim.eval("xolox#misc#option#get('notes_bullets_list', ['◉', '○', '✸', '✿'])")
+for (i,c) in enumerate(bulletlist):
+  syn_hash = 'notesListBulletHash%d'%(i+1)
+  syn_regex = "+%s+"%('#'*(i+1))
+  vim.command('syntax match %s %s contained containedin=%s conceal cchar=%s'%(syn_hash, syn_regex, 'notesAtxMarker', c))
+EOF
+endif
 
 " E-mail style block quotes are highlighted as comments. {{{2
 syntax match notesBlockQuote /\(^\s*>.*\n\)\+/ contains=@notesInline

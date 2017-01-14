@@ -34,7 +34,7 @@ let b:undo_ftplugin .= ' | set foldmethod< foldexpr< foldtext<'
 
 " Enable concealing of notes syntax markers? {{{1
 if has('conceal')
-  setlocal conceallevel=3
+  setlocal conceallevel=2
   let b:undo_ftplugin .= ' | set conceallevel<'
 endif
 

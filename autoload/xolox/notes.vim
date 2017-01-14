@@ -902,6 +902,8 @@ function! xolox#notes#get_fnames_and_titles(include_shadow_notes) " {{{3
   return pairs
 endfunction
 
+let g:notes_name_special_charecters = [[' ','_']]
+
 function! xolox#notes#fname_to_title(filename) " {{{3
   " Convert absolute note {filename} to title.
   let fname = a:filename
@@ -912,12 +914,19 @@ function! xolox#notes#fname_to_title(filename) " {{{3
   " Strip directory path.
   let fname = fnamemodify(fname, ':t')
   " Decode special characters.
+  for pair in g:notes_name_special_charecters
+    let fname = substitute(fname, pair[1], pair[0], 'g')
+  endfor
   return xolox#misc#path#decode(fname)
 endfunction
 
 function! xolox#notes#title_to_fname(title) " {{{3
   " Convert note {title} to absolute filename.
-  let filename = xolox#misc#path#encode(a:title)
+  let fname = a:title
+  for pair in g:notes_name_special_charecters
+    let fname = substitute(fname, pair[0], pair[1], 'g')
+  endfor
+  let filename = xolox#misc#path#encode(fname)
   if filename != ''
     let directory = xolox#notes#select_directory()
     let pathname = xolox#misc#path#merge(directory, filename . g:notes_suffix)
